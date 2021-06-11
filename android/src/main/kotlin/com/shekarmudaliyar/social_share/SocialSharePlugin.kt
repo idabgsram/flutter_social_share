@@ -127,6 +127,29 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
             val clip = ClipData.newPlainText("", content)
             clipboard.setPrimaryClip(clip)
             result.success(true)
+        } else if (call.method == "shareWhatsappStatus") {
+            //shares content on WhatsApp
+            val content: String? = call.argument("content")
+            val image: String? = call.argument("image")
+
+            val whatsappIntent = Intent(Intent.ACTION_SEND)
+            if (image!=null) {
+                //check if  image is also provided
+                val imagefile =  File(registrar.activeContext().cacheDir,image)
+                val imageFileUri = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".com.shekarmudaliyar.social_share", imagefile)
+                whatsappIntent.type = "image/*"
+                whatsappIntent.putExtra(Intent.EXTRA_STREAM,imageFileUri)
+            } else {
+                whatsappIntent.type = "text/plain";
+            }
+            whatsappIntent.setPackage("com.whatsapp")
+            
+            try {
+                registrar.activity().startActivity(whatsappIntent)
+                result.success("true")
+            } catch (ex: ActivityNotFoundException) {
+                result.success("false")
+            }
         } else if (call.method == "shareWhatsapp") {
             //shares content on WhatsApp
             val content: String? = call.argument("content")
