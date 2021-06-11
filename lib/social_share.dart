@@ -210,7 +210,7 @@ class SocialShare {
         args = <String, dynamic>{"image": imagePath, "content": contentText};
       }
       
-    final String version = await _channel.invokeMethod('shareWhatsapp', args);
+    final String version = await _channel.invokeMethod('shareWhatsappStatus', args);
     return version;
   }
 
