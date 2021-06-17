@@ -250,6 +250,48 @@
     } else if ([@"shareSlack" isEqualToString:call.method]) {
         //NSString *content = call.arguments[@"content"];
         result([NSNumber numberWithBool:YES]);
+    } else if ([@"shareWhatsappStatus" isEqualToString:call.method]) {
+        NSString *content = call.arguments[@"content"];
+        NSString *image = call.arguments[@"image"];
+
+        if ([image isEqual:[NSNull null]] || [ image  length] == 0 ) {
+            //when image is not included
+            NSString * urlWhats = [NSString stringWithFormat:@"whatsapp://send?text=%@",content];
+            NSURL * whatsappURL = [NSURL URLWithString:[urlWhats stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            if ([[UIApplication sharedApplication] canOpenURL: whatsappURL]) {
+                [[UIApplication sharedApplication] openURL: whatsappURL];
+                result(@"sharing");
+            } else {
+                result(@"cannot open whatsapp");
+            }
+            result([NSNumber numberWithBool:YES]);
+        } else {
+            //when image file is included
+            NSURL * whatsappURL = [NSURL URLWithString:@"whatsapp://app"];
+            if ([[UIApplication sharedApplication] canOpenURL:whatsappURL])
+                {
+                    NSURL *myURL = [NSURL URLWithString:image];
+                    NSData * imageData = [[NSData alloc] initWithContentsOfURL:myURL];
+                    UIImage *imgShare = [[UIImage alloc] initWithData:imageData];
+                    NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+                    NSString *whatsappTempImagePath = [documentsDirectory stringByAppendingPathComponent:@"WhatsAppImage.wai"];
+                    
+                    UIImage *imageToUse = imgShare;
+                    NSData *imageData=UIImagePNGRepresentation(imageToUse);
+                    [imageData writeToFile:whatsappTempImagePath atomically:YES];
+                    NSURL *imageUrl = [NSURL fileURLWithPath:whatsappTempImagePath];
+                    
+                    if(!docInterationController)
+                    {
+                        docInterationController = [[UIDocumentInteractionController alloc] init];
+                    }
+                    docInterationController.delegate = self;
+                    docInterationController.UTI = @"net.whatsapp.image";
+                    docInterationController.URL = imageUrl;
+                    docInterationController.annotation = [NSString stringWithFormat:@"Share hasil Tryout"];
+                    [docInterationController presentOpenInMenuFromRect:CGRectZero inView:self animated:YES];
+                }
+        }
     } else if ([@"shareWhatsapp" isEqualToString:call.method]) {
         NSString *content = call.arguments[@"content"];
         NSString * urlWhats = [NSString stringWithFormat:@"whatsapp://send?text=%@",content];
