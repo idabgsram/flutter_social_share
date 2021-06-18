@@ -194,8 +194,10 @@ class SocialShare {
   static Future<String> shareWhatsappStatus(String contentText,{String imagePath}) async {
     
     Map<String, dynamic> args;
-
-    if (imagePath != null) {
+    if (Platform.isIOS) {
+      args = <String, dynamic>{"image": imagePath, "content": contentText};
+    } else {
+      if (imagePath != null) {
         File file = File(imagePath);
         Uint8List bytes = file.readAsBytesSync();
         var imagedata = bytes.buffer.asUint8List();
@@ -209,7 +211,7 @@ class SocialShare {
       } else {
         args = <String, dynamic>{"image": imagePath, "content": contentText};
       }
-      
+    }
     final String version = await _channel.invokeMethod('shareWhatsappStatus', args);
     return version;
   }
