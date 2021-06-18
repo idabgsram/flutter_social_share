@@ -6,6 +6,10 @@
 #import "SocialSharePlugin.h"
 #include <objc/runtime.h>
 
+@interface SocialSharePlugin()<UIDocumentInteractionControllerDelegate>{
+	UIDocumentInteractionController *docInterationController;
+}
+
 @implementation SocialSharePlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"social_share" binaryMessenger:[registrar messenger]];
