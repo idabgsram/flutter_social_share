@@ -312,28 +312,34 @@
                     // NSURL *myURL = [NSURL URLWithString:image];
                     // NSData * imageSourceData = [[NSData alloc] initWithContentsOfURL:myURL];
                     // UIImage *imgShare = [[UIImage alloc] initWithData:imageSourceData];
-                    NSFileManager *fileManager = [NSFileManager defaultManager];
-                    BOOL isFileExist = [fileManager fileExistsAtPath: image];
-                    UIImage *imgBackgroundShare;
-                    if (isFileExist) {
-                        imgBackgroundShare = [[UIImage alloc] initWithContentsOfFile:image];
-                    }
-                    NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-                    NSString *whatsappTempImagePath = [documentsDirectory stringByAppendingPathComponent:@"WhatsAppImage.wai"];
+                    // NSFileManager *fileManager = [NSFileManager defaultManager];
+                    // BOOL isFileExist = [fileManager fileExistsAtPath: image];
+                    // UIImage *imgBackgroundShare;
+                    // if (isFileExist) {
+                    //     imgBackgroundShare = [[UIImage alloc] initWithContentsOfFile:image];
+                    // }
+                    // NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+                    // NSString *whatsappTempImagePath = [documentsDirectory stringByAppendingPathComponent:@"WhatsAppImage.wai"];
                     
-                    NSData *imageData=UIImagePNGRepresentation(imgBackgroundShare);
-                    [imageData writeToFile:whatsappTempImagePath atomically:YES];
-                    NSURL *imageUrl = [NSURL fileURLWithPath:whatsappTempImagePath];
-                    
-                    if(!docInterationController)
-                    {
-                        docInterationController = [[UIDocumentInteractionController alloc] init];
-                    }
-                    docInterationController.delegate = self;
-                    docInterationController.UTI = @"net.whatsapp.image";
-                    docInterationController.URL = imageUrl;
-                    docInterationController.annotation = [NSString stringWithFormat:@"Share hasil Tryout"];
-                    [docInterationController presentOpenInMenuFromRect:CGRectZero inView:self animated:YES];
+                    // NSData *imageData=UIImagePNGRepresentation(imgBackgroundShare);
+                    // [imageData writeToFile:whatsappTempImagePath atomically:YES];
+                    // NSURL *imageUrl = [NSURL fileURLWithPath:whatsappTempImagePath];
+
+                    // docInterationController = [UIDocumentInteractionController interactionControllerWithURL:imageUrl];
+                    // docInterationController.delegate = self;
+                    // docInterationController.UTI = @"net.whatsapp.image";
+                    // [docInterationController presentOpenInMenuFromRect:CGRectZero inView:self animated:YES];
+
+                        UIImage     * iconImage = [[UIImage alloc] initWithContentsOfFile:image];
+                        NSString    * savePath  = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/whatsAppTmp.wai"];
+
+                        [UIImageJPEGRepresentation(iconImage, 1.0) writeToFile:savePath atomically:YES];
+
+                        docInterationController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
+                        docInterationController.UTI = @"net.whatsapp.image";
+                        docInterationController.delegate = self;
+
+                        [docInterationController presentOpenInMenuFromRect:CGRectMake(0, 0, 0, 0) inView:self.view animated: YES];
                 }
         }
     } else if ([@"shareWhatsapp" isEqualToString:call.method]) {
