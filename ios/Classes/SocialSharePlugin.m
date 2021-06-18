@@ -339,7 +339,7 @@
                         docInterationController.UTI = @"net.whatsapp.image";
                         docInterationController.delegate = self;
 
-                        [docInterationController presentOpenInMenuFromRect:CGRectMake(0, 0, 0, 0) inView:self.view animated: YES];
+                        [docInterationController presentOpenInMenuFromRect:CGRectZero inView:self animated: YES];
                 }
         }
     } else if ([@"shareWhatsapp" isEqualToString:call.method]) {
