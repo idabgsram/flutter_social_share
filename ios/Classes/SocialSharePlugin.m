@@ -285,7 +285,7 @@
                         } else {
                             result(@"this only supports iOS 10+");
                         }
-           }
+           
        } else {
            result(@"not supported or no facebook installed");
        }
