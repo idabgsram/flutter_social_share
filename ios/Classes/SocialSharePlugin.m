@@ -271,8 +271,8 @@
             if ([[UIApplication sharedApplication] canOpenURL:whatsappURL])
                 {
                     NSURL *myURL = [NSURL URLWithString:image];
-                    NSData * imageData = [[NSData alloc] initWithContentsOfURL:myURL];
-                    UIImage *imgShare = [[UIImage alloc] initWithData:imageData];
+                    NSData * imageSourceData = [[NSData alloc] initWithContentsOfURL:myURL];
+                    UIImage *imgShare = [[UIImage alloc] initWithData:imageSourceData];
                     NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
                     NSString *whatsappTempImagePath = [documentsDirectory stringByAppendingPathComponent:@"WhatsAppImage.wai"];
                     
