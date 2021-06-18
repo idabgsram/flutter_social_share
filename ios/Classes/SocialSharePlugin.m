@@ -263,7 +263,7 @@
         NSString *content = call.arguments[@"content"];
         NSString *image = call.arguments[@"image"];
         //url Scheme for instagram story
-        NSURL *urlScheme = [NSURL URLWithString:@"whatsapp://app"];
+        NSURL *urlScheme = [NSURL URLWithString:@"whatsapp://send"];
         //adding data to send to instagram story
         if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
            //if instagram is installed and the url can be opened
