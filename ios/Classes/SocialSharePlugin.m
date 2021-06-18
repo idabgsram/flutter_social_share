@@ -10,6 +10,8 @@
 	UIDocumentInteractionController *docInterationController;
 }
 
+@end
+
 @implementation SocialSharePlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"social_share" binaryMessenger:[registrar messenger]];
