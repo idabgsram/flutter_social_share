@@ -335,11 +335,24 @@
 
                         [UIImageJPEGRepresentation(iconImage, 1.0) writeToFile:savePath atomically:YES];
 
-                        docInterationController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
-                        docInterationController.UTI = @"net.whatsapp.image";
-                        docInterationController.delegate = self;
 
-                        [docInterationController presentOpenInMenuFromRect:CGRectZero inView:self animated: YES];
+                        NSFileManager *fileManager = [NSFileManager defaultManager];
+                        BOOL isFileExist = [fileManager fileExistsAtPath: savePath];
+                        UIImage *imgShare;
+                        if (isFileExist) {
+                            imgShare = [[UIImage alloc] initWithContentsOfFile:savePath];
+                        }
+                        NSArray *objectsToShare = @[imgShare];
+                        UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
+                        UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
+                        [controller presentViewController:activityVC animated:YES completion:nil];
+                        result([NSNumber numberWithBool:YES]);
+
+                        // docInterationController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
+                        // docInterationController.UTI = @"net.whatsapp.image";
+                        // docInterationController.delegate = self;
+
+                        // [docInterationController presentOpenInMenuFromRect:CGRectZero inView:self animated: YES];
                 }
         }
     } else if ([@"shareWhatsapp" isEqualToString:call.method]) {
