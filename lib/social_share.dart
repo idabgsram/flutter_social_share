@@ -202,7 +202,7 @@ class SocialShare {
         Uint8List bytes = file.readAsBytesSync();
         var imagedata = bytes.buffer.asUint8List();
         final tempDir = await getTemporaryDirectory();
-        String imageName = 'stickerAsset.png';
+        String imageName = 'waStatus.png';
         final Uint8List imageAsList = imagedata;
         final imageDataPath = '${tempDir.path}/$imageName';
         file = await File(imageDataPath).create();

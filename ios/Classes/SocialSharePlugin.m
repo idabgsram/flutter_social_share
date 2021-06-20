@@ -6,6 +6,13 @@
 #import "SocialSharePlugin.h"
 #include <objc/runtime.h>
 
+@interface SocialSharePlugin ()
+<UIDocumentInteractionControllerDelegate>
+
+@property (retain) UIDocumentInteractionController * documentInteractionController;
+
+@end
+
 @implementation SocialSharePlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"social_share" binaryMessenger:[registrar messenger]];
@@ -252,38 +259,6 @@
         result([NSNumber numberWithBool:YES]);
     } else if ([@"shareWhatsappStatus" isEqualToString:call.method]) {
 
-        //Sharing story on instagram
-
-    //     NSString *content = call.arguments[@"content"];
-    //     NSString *image = call.arguments[@"image"];
-    //     //url Scheme for instagram story
-    //     NSURL *urlScheme = [NSURL URLWithString:@"whatsapp://app"];
-    //     //adding data to send to instagram story
-    //     if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
-    //        //if instagram is installed and the url can be opened
-    //        NSFileManager *fileManager = [NSFileManager defaultManager];
-    //        BOOL isFileExist = [fileManager fileExistsAtPath: image];
-    //        UIImage *imgBackgroundShare;
-    //        if (isFileExist) {
-    //            imgBackgroundShare = [[UIImage alloc] initWithContentsOfFile:image];
-    //        }
-    //            NSArray *pasteboardItems = @[@{@"net.whatsapp.image" : imgBackgroundShare
-    //                       }];
-    //                       if (@available(iOS 10.0, *)) {
-    //                       NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
-    //                       // This call is iOS 10+, can use 'setItems' depending on what versions you support
-    //                       [[UIPasteboard generalPasteboard] setItems:pasteboardItems options:pasteboardOptions];
-                              
-    //                         [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
-    //                           result(@"sharing");
-    //                     } else {
-    //                         result(@"this only supports iOS 10+");
-    //                     }
-    //        }
-    //    } else {
-    //        result(@"not supported or no facebook installed");
-    //    }
-
         NSString *content = call.arguments[@"content"];
         NSString *image = call.arguments[@"image"];
 
@@ -303,52 +278,22 @@
             NSURL *whatsappURL = [NSURL URLWithString:@"whatsapp://app"];
             if ([[UIApplication sharedApplication] canOpenURL:whatsappURL])
                 {
-                    // NSURL *myURL = [NSURL URLWithString:image];
-                    // NSData * imageSourceData = [[NSData alloc] initWithContentsOfURL:myURL];
-                    // UIImage *imgShare = [[UIImage alloc] initWithData:imageSourceData];
-                    // NSFileManager *fileManager = [NSFileManager defaultManager];
-                    // BOOL isFileExist = [fileManager fileExistsAtPath: image];
-                    // UIImage *imgBackgroundShare;
-                    // if (isFileExist) {
-                    //     imgBackgroundShare = [[UIImage alloc] initWithContentsOfFile:image];
-                    // }
-                    // NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-                    // NSString *whatsappTempImagePath = [documentsDirectory stringByAppendingPathComponent:@"WhatsAppImage.wai"];
-                    
-                    // NSData *imageData=UIImagePNGRepresentation(imgBackgroundShare);
-                    // [imageData writeToFile:whatsappTempImagePath atomically:YES];
-                    // NSURL *imageUrl = [NSURL fileURLWithPath:whatsappTempImagePath];
+                    UIImage *imgBackgroundShare = [[UIImage alloc] initWithContentsOfFile:image];
+                    NSString    * savePath  = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/resultImage.wai"];
 
-                    // docInterationController = [UIDocumentInteractionController interactionControllerWithURL:imageUrl];
-                    // docInterationController.delegate = self;
-                    // docInterationController.UTI = @"net.whatsapp.image";
-                    // [docInterationController presentOpenInMenuFromRect:CGRectZero inView:self animated:YES];
+                    [UIImageJPEGRepresentation(imgBackgroundShare, 1.0) writeToFile:savePath atomically:YES];
 
-                        UIImage     * iconImage = [[UIImage alloc] initWithContentsOfFile:image];
-                        NSString    * savePath  = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/whatsAppTmp.wai"];
+                    _documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
+                    _documentInteractionController.UTI = @"net.whatsapp.image";
+                    _documentInteractionController.delegate = self;
 
-                        [UIImageJPEGRepresentation(iconImage, 1.0) writeToFile:savePath atomically:YES];
-
-
-                        // NSFileManager *fileManager = [NSFileManager defaultManager];
-                        // BOOL isFileExist = [fileManager fileExistsAtPath: savePath];
-                        // UIImage *imgShare;
-                        // if (isFileExist) {
-                        //     imgShare = [[UIImage alloc] initWithContentsOfFile:savePath];
-                        // }
-                        // NSArray *objectsToShare = @[imgShare];
-                        // UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
-                        // UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
-                        // [controller presentViewController:activityVC animated:YES completion:nil];
-                        // result([NSNumber numberWithBool:YES]);
-
-                        UIDocumentInteractionController *docInterationController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
-                        docInterationController.UTI = @"net.whatsapp.image";
-                        docInterationController.delegate = self;
-                        UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
-                        [controller presentViewController:docInterationController animated:YES completion:nil];
-                        // [docInterationController presentOpenInMenuFromRect:CGRectZero inView:self animated: YES];
+                    UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
+                    [_documentInteractionController presentOpenInMenuFromRect:CGRectMake(0, 0, 0, 0) inView:controller.view animated: YES];
+                    result(@"sharing");
+                } else {
+                    result(@"cannot open whatsapp");
                 }
+            result([NSNumber numberWithBool:YES]);
         }
     } else if ([@"shareWhatsapp" isEqualToString:call.method]) {
         NSString *content = call.arguments[@"content"];
